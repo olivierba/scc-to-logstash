@@ -1,0 +1,12 @@
+# See variables.tf for descriptions
+
+project = "myproject-id-123456"
+zone = "europe-west1-b"
+region  = "europe-west1"
+
+#gcp_key_filename = "key-file-name.json" #use if service account needed
+
+
+scc-sa = "sa-logstash@myproject-id-123456.iam.gserviceaccount.com"
+
+topic = "scc-topic"

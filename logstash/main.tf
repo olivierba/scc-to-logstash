@@ -4,23 +4,16 @@ resource "google_service_account" "sa-logstash" {
   display_name = "Logstash VM service account"
 }
 
-#need permission to access Pubsub topic and dl config file on cloud storage bucket
+#need permission to access Pubsub topic
 data "google_iam_policy" "scc-computeservice-iam" {
     binding {
         role = "roles/iam.serviceAccountUser"
 
         members = [
-            "user:${var.scc-sa}",
-        ]
-    }
-    binding {
-        role = "roles/storage.objectViewer"
-        members = [
-            "user:${var.scc-sa}",
+            "serviceAccount:${var.scc-sa}",
         ]
     }
 }
-
 
 resource "google_service_account_iam_policy" "scc-account-iam" {
     service_account_id = google_service_account.sa-logstash.name
@@ -31,7 +24,7 @@ data "google_iam_policy" "scc-pubsub-topic-editor" {
   binding {
     role = "roles/editor"
     members = [
-      "user:${var.scc-sa}",
+      "serviceAccount:${var.scc-sa}",
     ]
   }
 }
@@ -49,10 +42,18 @@ resource "google_storage_bucket" "logstash-config" {
   force_destroy = true
 }
 
+#uploading the file
 resource "google_storage_bucket_object" "logstash-config-file" {
   name   = "scc-pipeline.conf"
   source = "scc-pipeline.conf"
-  bucket = "${var.project}-logstash-config"
+  bucket = google_storage_bucket.logstash-config.id 
+}
+
+#iam permission on the bucket to the service account
+resource "google_storage_bucket_iam_member" "member" {
+  bucket = google_storage_bucket.logstash-config.id 
+  role = "roles/storage.objectViewer"
+  member = "serviceAccount:${var.scc-sa}"
 }
 
 resource "google_compute_instance" "vm_logstash" {

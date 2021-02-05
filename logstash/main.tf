@@ -44,7 +44,7 @@ resource "google_pubsub_topic_iam_policy" "policy" {
 
 #this bucket will contain the logstash pipeline config file. The VM will pull this config upon startup
 resource "google_storage_bucket" "logstash-config" {
-  name          = "logstash-config"
+  name          = "${var.project}-logstash-config"
   location      = "EU"
   force_destroy = true
 }
@@ -52,7 +52,7 @@ resource "google_storage_bucket" "logstash-config" {
 resource "google_storage_bucket_object" "logstash-config-file" {
   name   = "scc-pipeline.conf"
   source = "scc-pipeline.conf"
-  bucket = "logstash-config"
+  bucket = "${var.project}-logstash-config"
 }
 
 resource "google_compute_instance" "vm_logstash" {

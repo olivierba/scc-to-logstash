@@ -10,3 +10,4 @@ region  = "europe-west1"
 scc-sa = "sa-logstash@myproject-id-123456.iam.gserviceaccount.com"
 
 topic = "scc-topic"
+subscription = "scc-subscription"

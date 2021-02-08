@@ -13,6 +13,9 @@ variable "zone" {
 variable "topic" {
   default = "pubsubtopic"
 }
+variable "subscription" {
+    default = "scc-subscription"
+}
 
 variable "project" {
   description = "What is the name of the project you would like resources to be created under in GCP?"
